@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elevator Buttons</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sarabun">
     <style>
         body{
             margin: 0;
@@ -62,6 +63,7 @@
             text-align: center;
             font-size: 3rem;
             margin-top: 20px;
+            font-family: "Sarabun";
         }
     </style>
 </head>
@@ -70,7 +72,7 @@
     <div class="header-text">กดเริ่มเลย</div>
     <div class="elevator-buttons start" style="height:calc(100vh / 10);">
         <button class="button icon-button" style="height:calc(100vh / 5)" onclick="startTimer()">
-            <h2>Start</h2>
+            <h2 style="font-family: 'Sarabun';">เริ่ม</h2>
             <img src="1.png">
         </button>
     </div>
@@ -198,6 +200,7 @@
                     popup.style.backgroundColor = 'green';
                     popup.style.color = 'white';
                     popup.style.padding = '20px';
+                    popup.style.fontFamily = 'Sarabun';
                     popup.style.borderRadius = '10px';
                     popup.style.fontSize = '2rem';
                     document.body.appendChild(popup);
@@ -243,11 +246,12 @@
                     let popup = document.createElement('div');
                     popup.innerText = 'กดผิดชั้น กดใหม่เลย!';
                     popup.style.position = 'fixed';
-                    popup.style.top = '50%';
-                    popup.style.left = '50%';
+                    popup.style.top = `${button.getBoundingClientRect().top}px`;
+                    popup.style.left = `${button.getBoundingClientRect().left}px`;
                     popup.style.transform = 'translate(-50%, -50%)';
                     popup.style.backgroundColor = 'red';
                     popup.style.color = 'white';
+                    popup.style.fontFamily = 'Sarabun';
                     popup.style.padding = '20px';
                     popup.style.borderRadius = '10px';
                     popup.style.fontSize = '2rem';
