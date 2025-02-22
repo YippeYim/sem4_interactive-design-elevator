@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elevator Buttons</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            justify-items: center;
+        }
+        body * {
+            border: 1px solid red;
+        }
+        #bg {
+            height: 100vh;
+            position: fixed;
+            filter: contrast(90%);
+            transform: translateY(-1.5%);
+            z-index: -1; /* Ensure the background image is behind everything */
+        }
+        .elevator-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0px; /* Decreased the horizontal gap */
+            height: 90vh;
+            width: 35vw;
+            align-items: center;
+            justify-items: center;
+        }
+        .button {
+            margin: 0;
+            height: calc(100vh / 10); /* Adjust the divisor based on the number of rows you want */
+            /* color: #333; */
+            text-align: center;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); */
+            aspect-ratio: 1;
+            position: relative;
+            background-color: rgba(255, 0, 0, 0);
+        }
+        .icon-button img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+        .icon-button h2 {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          font-size: calc(100vh / 16);
+          margin: 0;
+        }
+        .header-text {
+            text-align: center;
+            font-size: 3rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <img id="bg" src="2.png" alt="">
+    <div class="header-text">กดเริ่มเลย</div>
+    <div class="elevator-buttons start" style="height:calc(100vh / 10);">
+        <button class="button icon-button" style="height:calc(100vh / 5)" onclick="startTimer()">
+            <h2>Start</h2>
+            <img src="1.png">
+        </button>
+    </div>
+    <div class="elevator-buttons main" style="visibility: hidden;">
+        <button class="button btnnum icon-button">
+            <h2>1</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>2</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>3</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>4</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>5</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>6</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>7</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>8</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>9</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>10</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>11</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <h2>12</h2>
+            <img src="1.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <img src="3.png">
+        </button>
+        <button class="button btnnum icon-button">
+            <img src="4.png">
+        </button>
+    </div>
+</body>
+<script>
+    let randomSequence = [];
+    let correctAnswerList = [];
+    let round = 0;
+    let timeTaken = [];
+    
+    let startTime;
+
+    initGame = () => {
+        randomSequence = Array.from({length: 4}, (_, i) => i).sort(() => Math.random() - 0.5);
+        console.log(randomSequence);
+        correctAnswerList = Array.from({length: 12}, (_, i) => i + 1).sort(() => Math.random() - 0.5).slice(0, 4);
+        console.log(correctAnswerList);
+        round = 0;
+    }
+
+    startTimer = () => {
+        document.querySelector('.start').style.visibility = 'hidden';
+        document.querySelector('.start').style.height = '0px';
+        document.querySelector('.main').style.visibility = 'visible';
+
+        if (round == 0 || round == 4) {
+            initGame();
+        }
+        setup(randomSequence[round], correctAnswerList[round]);
+        startTime = Date.now();
+    }
+    
+    setup = (typeOrder, correctAnswer) => {
+        document.querySelector('.header-text').innerText = `กดชั้น ${correctAnswer}`;
+        const buttons = document.querySelectorAll('.btnnum');
+        const buttonNumbers = [[1, 7, 2, 8, 3, 9, 4, 10, 5, 11, 6, 12, '', ''],
+                            [6, 12, 5, 11, 4, 10, 3, 9, 2, 8, 1, 7, '', ''],
+                            [6, 7, 5, 8, 4, 9, 3, 10, 2, 11, 1, 12, '', ''],
+                            [1, 12, 2, 11, 3, 10, 4, 9, 5, 8, 6, 7, '', '']];
+        buttons.forEach((button, index) => {
+            const buttonNumber = buttonNumbers[typeOrder][index];
+            if (buttonNumber !== undefined && buttonNumber !== '') {
+                button.querySelector('h2').innerText = buttonNumber;
+            }
+            
+            button.addEventListener('click', () => {
+                button.classList.toggle('active');
+                let pressed = button.querySelector('h2').innerText;
+                console.log(pressed);
+                if (pressed == correctAnswer) {
+                    round++;
+                    correctAnswer = -1;
+
+                    console.log('Correct');
+                    document.querySelector('.main').style.visibility = 'hidden';
+                    document.querySelector('.start').style.visibility = 'visible';
+                    document.querySelector('.start').style.height = 'calc(100vh / 10)';
+                    document.querySelector('.header-text').innerText = 'กดเริ่มเลย';
+
+                    let popup = document.createElement('div');
+                    popup.innerText = 'ถูกต้อง เสิร์ฟจานได้เลย';
+                    popup.style.position = 'fixed';
+                    popup.style.top = `${button.getBoundingClientRect().top}px`;
+                    popup.style.left = `${button.getBoundingClientRect().left}px`;
+                    popup.style.transform = 'translate(-50%, -50%)';
+                    popup.style.backgroundColor = 'green';
+                    popup.style.color = 'white';
+                    popup.style.padding = '20px';
+                    popup.style.borderRadius = '10px';
+                    popup.style.fontSize = '2rem';
+                    document.body.appendChild(popup);
+
+                    setTimeout(() => {
+                        popup.remove();
+                    }, 1000);
+                    buttons.forEach(button => {
+                        const newButton = button.cloneNode(true);
+                        button.parentNode.replaceChild(newButton, button);
+                    });
+
+                    let endTime = Date.now();
+                    timeTaken[round] = (endTime - startTime) / 1000;
+                    console.log(`Time taken: ${timeTaken[round]} seconds`);
+
+                    if (round == 4) {
+                        // Send data to Google Sheets using Google Forms prefill URL
+                        const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSejTJNHuWQt2rD327nWOAUbmqdUCPjiVcaUa7HUWin_If2TfA/viewform?usp=pp_url&';
+                        const prefillUrl = `${formUrl}entry.2090230874=${randomSequence[0]}&entry.935134960=${randomSequence[1]}&entry.288174263=${randomSequence[2]}&entry.1094256103=${randomSequence[3]}&entry.1481302969=${timeTaken[0]}&entry.190364134=${timeTaken[1]}&entry.2070736519=${timeTaken[2]}&entry.1106771805=${timeTaken[3]}&entry.1425741742=${correctAnswerList[0]}&entry.482346859=${correctAnswerList[1]}&entry.1635972760=${correctAnswerList[2]}&entry.850495956=${correctAnswerList[3]}`;
+                        fetch(prefillUrl, {
+                            method: 'GET',
+                        }).then(() => console.log('Data sent to Google Sheets'))
+                          .catch(error => console.error('Error:', error));
+                    }
+
+                } else {
+                    let popup = document.createElement('div');
+                    popup.innerText = 'กดผิดชั้น กดใหม่เลย!';
+                    popup.style.position = 'fixed';
+                    popup.style.top = '50%';
+                    popup.style.left = '50%';
+                    popup.style.transform = 'translate(-50%, -50%)';
+                    popup.style.backgroundColor = 'red';
+                    popup.style.color = 'white';
+                    popup.style.padding = '20px';
+                    popup.style.borderRadius = '10px';
+                    popup.style.fontSize = '2rem';
+                    document.body.appendChild(popup);
+
+                    setTimeout(() => {
+                        popup.remove();
+                    }, 500);
+                    // ตอบผิด 1 ครั้งเพิ่มเวลาไป 100 วินาที
+                    startTime -= 100000;
+                }
+            });
+        }
+    );
+    }
+</script>
+</html>
