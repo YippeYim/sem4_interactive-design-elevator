@@ -177,6 +177,9 @@
                 let pressed = button.querySelector('h2').innerText;
                 console.log(pressed);
                 if (pressed == correctAnswer) {
+                    let endTime = Date.now();
+                    timeTaken[round] = (endTime - startTime) / 1000;
+                    console.log(`Time taken: ${timeTaken[round]} seconds`);
                     round++;
                     correctAnswer = -1;
 
@@ -207,18 +210,33 @@
                         button.parentNode.replaceChild(newButton, button);
                     });
 
-                    let endTime = Date.now();
-                    timeTaken[round] = (endTime - startTime) / 1000;
-                    console.log(`Time taken: ${timeTaken[round]} seconds`);
 
                     if (round == 4) {
-                        // Send data to Google Sheets using Google Forms prefill URL
-                        const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSejTJNHuWQt2rD327nWOAUbmqdUCPjiVcaUa7HUWin_If2TfA/viewform?usp=pp_url&';
-                        const prefillUrl = `${formUrl}entry.2090230874=${randomSequence[0]}&entry.935134960=${randomSequence[1]}&entry.288174263=${randomSequence[2]}&entry.1094256103=${randomSequence[3]}&entry.1481302969=${timeTaken[0]}&entry.190364134=${timeTaken[1]}&entry.2070736519=${timeTaken[2]}&entry.1106771805=${timeTaken[3]}&entry.1425741742=${correctAnswerList[0]}&entry.482346859=${correctAnswerList[1]}&entry.1635972760=${correctAnswerList[2]}&entry.850495956=${correctAnswerList[3]}`;
-                        fetch(prefillUrl, {
-                            method: 'GET',
-                        }).then(() => console.log('Data sent to Google Sheets'))
-                          .catch(error => console.error('Error:', error));
+                        const formData = new FormData();
+                        formData.append('entry.2090230874', randomSequence[0]);
+                        formData.append('entry.935134960', randomSequence[1]);
+                        formData.append('entry.288174263', randomSequence[2]);
+                        formData.append('entry.1094256103', randomSequence[3]);
+                        formData.append('entry.1481302969', timeTaken[0]);
+                        formData.append('entry.190364134', timeTaken[1]);
+                        formData.append('entry.2070736519', timeTaken[2]);
+                        formData.append('entry.1106771805', timeTaken[3]);
+                        formData.append('entry.1425741742', correctAnswerList[0]);
+                        formData.append('entry.482346859', correctAnswerList[1]);
+                        formData.append('entry.1635972760', correctAnswerList[2]);
+                        formData.append('entry.850495956', correctAnswerList[3]);
+
+                        fetch('https://docs.google.com/forms/d/e/1FAIpQLSejTJNHuWQt2rD327nWOAUbmqdUCPjiVcaUa7HUWin_If2TfA/formResponse', {
+                          method: 'POST',
+                          mode: 'no-cors',
+                          body: formData
+                        })
+                        .then(() => {
+                          console.log('Form submitted successfully');
+                        })
+                        .catch(error => {
+                          console.error('Error submitting form:', error);
+                        });
                     }
 
                 } else {
